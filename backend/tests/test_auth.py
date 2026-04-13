@@ -1,6 +1,3 @@
-import pytest
-
-
 class TestRegister:
     """Tests for POST /api/auth/register."""
 
