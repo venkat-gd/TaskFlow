@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import os
+from typing import Any
 
 from celery import Celery
 
@@ -17,12 +20,12 @@ def make_celery(app=None) -> Celery:
             task_eager_propagates=True,
         )
 
-        class ContextTask(celery.Task):
-            def __call__(self, *args, **kwargs):
+        class ContextTask(celery.Task):  # type: ignore[name-defined]
+            def __call__(self, *args: Any, **kwargs: Any) -> Any:
                 with app.app_context():
                     return self.run(*args, **kwargs)
 
-        celery.Task = ContextTask
+        celery.Task = ContextTask  # type: ignore[assignment]
     else:
         # Standalone mode (docker-compose worker/beat): read from env
         celery.conf.update(

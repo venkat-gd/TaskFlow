@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import timedelta
 
 from flask import current_app
@@ -47,11 +49,11 @@ def revoke_token(jti: str, token_type: str = "access") -> None:
     else:
         ttl_seconds = int(ttl)
 
-    ext.redis_client.setex(f"blocklist:{jti}", ttl_seconds, "revoked")
+    ext.redis_client.setex(f"blocklist:{jti}", ttl_seconds, "revoked")  # type: ignore[union-attr]
 
 
 def is_token_revoked(jwt_payload: dict) -> bool:
     """Check if a token's JTI is in the blocklist."""
     jti = jwt_payload["jti"]
-    result = ext.redis_client.get(f"blocklist:{jti}")
+    result = ext.redis_client.get(f"blocklist:{jti}")  # type: ignore[union-attr]
     return result is not None
