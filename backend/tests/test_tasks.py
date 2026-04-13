@@ -41,9 +41,7 @@ class TestCreateTask:
         assert response.status_code == 422
 
     def test_create_task_title_too_long(self, auth_cookies):
-        response = auth_cookies.post(
-            "/api/tasks", json={"title": "x" * 201}
-        )
+        response = auth_cookies.post("/api/tasks", json={"title": "x" * 201})
         assert response.status_code == 422
 
     def test_create_task_invalid_status(self, auth_cookies):
@@ -53,9 +51,7 @@ class TestCreateTask:
         assert response.status_code == 422
 
     def test_create_task_no_body(self, auth_cookies):
-        response = auth_cookies.post(
-            "/api/tasks", content_type="application/json"
-        )
+        response = auth_cookies.post("/api/tasks", content_type="application/json")
         assert response.status_code == 400
 
     def test_create_task_unauthenticated(self, client):
@@ -171,9 +167,7 @@ class TestUpdateTask:
         assert response.get_json()["task"]["title"] == "Updated"
 
     def test_full_update_not_found(self, auth_cookies):
-        response = auth_cookies.put(
-            "/api/tasks/fake-id", json={"title": "Nope"}
-        )
+        response = auth_cookies.put("/api/tasks/fake-id", json={"title": "Nope"})
         assert response.status_code == 404
 
     def test_full_update_no_body(self, auth_cookies):
@@ -199,25 +193,19 @@ class TestPatchTask:
     def test_patch_status(self, auth_cookies):
         create_resp = auth_cookies.post("/api/tasks", json={"title": "Test"})
         task_id = create_resp.get_json()["task"]["id"]
-        response = auth_cookies.patch(
-            f"/api/tasks/{task_id}", json={"status": "done"}
-        )
+        response = auth_cookies.patch(f"/api/tasks/{task_id}", json={"status": "done"})
         assert response.status_code == 200
         assert response.get_json()["task"]["status"] == "done"
 
     def test_patch_position(self, auth_cookies):
         create_resp = auth_cookies.post("/api/tasks", json={"title": "Test"})
         task_id = create_resp.get_json()["task"]["id"]
-        response = auth_cookies.patch(
-            f"/api/tasks/{task_id}", json={"position": 3}
-        )
+        response = auth_cookies.patch(f"/api/tasks/{task_id}", json={"position": 3})
         assert response.status_code == 200
         assert response.get_json()["task"]["position"] == 3
 
     def test_patch_not_found(self, auth_cookies):
-        response = auth_cookies.patch(
-            "/api/tasks/fake-id", json={"status": "done"}
-        )
+        response = auth_cookies.patch("/api/tasks/fake-id", json={"status": "done"})
         assert response.status_code == 404
 
     def test_patch_no_body(self, auth_cookies):

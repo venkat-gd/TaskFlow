@@ -29,20 +29,43 @@ def register():
     """Register a new user."""
     json_data = request.get_json()
     if json_data is None:
-        return jsonify({"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}), 400
+        return (
+            jsonify(
+                {"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}
+            ),
+            400,
+        )
 
     try:
         data = register_schema.load(json_data)
     except ValidationError as err:
-        return jsonify({"error": {"code": "VALIDATION_ERROR", "message": "Validation failed.", "details": err.messages}}), 422
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Validation failed.",
+                        "details": err.messages,
+                    }
+                }
+            ),
+            422,
+        )
 
     if User.query.filter_by(email=data["email"]).first():
-        return jsonify({"error": {"code": "CONFLICT", "message": "Email already registered."}}), 409
+        return (
+            jsonify(
+                {"error": {"code": "CONFLICT", "message": "Email already registered."}}
+            ),
+            409,
+        )
 
     user = register_user(data["email"], data["username"], data["password"])
     tokens = generate_tokens(user.id)
 
-    response = jsonify({"message": "User registered successfully.", "user": user.to_dict()})
+    response = jsonify(
+        {"message": "User registered successfully.", "user": user.to_dict()}
+    )
     set_access_cookies(response, tokens["access_token"])
     set_refresh_cookies(response, tokens["refresh_token"])
     return response, 201
@@ -53,16 +76,42 @@ def login():
     """Authenticate user and set JWT cookies."""
     json_data = request.get_json()
     if json_data is None:
-        return jsonify({"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}), 400
+        return (
+            jsonify(
+                {"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}
+            ),
+            400,
+        )
 
     try:
         data = login_schema.load(json_data)
     except ValidationError as err:
-        return jsonify({"error": {"code": "VALIDATION_ERROR", "message": "Validation failed.", "details": err.messages}}), 422
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Validation failed.",
+                        "details": err.messages,
+                    }
+                }
+            ),
+            422,
+        )
 
     user = authenticate_user(data["email"], data["password"])
     if not user:
-        return jsonify({"error": {"code": "UNAUTHORIZED", "message": "Invalid email or password."}}), 401
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": "UNAUTHORIZED",
+                        "message": "Invalid email or password.",
+                    }
+                }
+            ),
+            401,
+        )
 
     tokens = generate_tokens(user.id)
 

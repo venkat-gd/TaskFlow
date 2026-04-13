@@ -22,11 +22,17 @@ class Config:
     REDIS_URL: str = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
     # Celery
-    CELERY_BROKER_URL: str = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/1")
-    CELERY_RESULT_BACKEND: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/1")
+    CELERY_BROKER_URL: str = os.environ.get(
+        "CELERY_BROKER_URL", "redis://localhost:6379/1"
+    )
+    CELERY_RESULT_BACKEND: str = os.environ.get(
+        "CELERY_RESULT_BACKEND", "redis://localhost:6379/1"
+    )
 
     # CORS
-    CORS_ORIGINS: list[str] = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+    CORS_ORIGINS: list[str] = os.environ.get(
+        "CORS_ORIGINS", "http://localhost:3000"
+    ).split(",")
 
 
 class DevelopmentConfig(Config):

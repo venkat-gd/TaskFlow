@@ -24,5 +24,7 @@ def cleanup_expired_tokens() -> dict:
         ttl = rc.ttl(key)
         if ttl == -2:  # key doesn't exist anymore
             expired_count += 1
-    logger.info("Cleanup: found %d blocklist keys, %d expired", len(keys), expired_count)
+    logger.info(
+        "Cleanup: found %d blocklist keys, %d expired", len(keys), expired_count
+    )
     return {"status": "done", "checked": len(keys), "expired": expired_count}

@@ -10,7 +10,9 @@ def make_celery(app=None) -> Celery:
     if app is not None:
         celery.conf.update(
             broker_url=app.config.get("CELERY_BROKER_URL", "redis://localhost:6379/1"),
-            result_backend=app.config.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/1"),
+            result_backend=app.config.get(
+                "CELERY_RESULT_BACKEND", "redis://localhost:6379/1"
+            ),
             task_always_eager=app.config.get("CELERY_ALWAYS_EAGER", False),
             task_eager_propagates=True,
         )
@@ -25,7 +27,9 @@ def make_celery(app=None) -> Celery:
         # Standalone mode (docker-compose worker/beat): read from env
         celery.conf.update(
             broker_url=os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/1"),
-            result_backend=os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/1"),
+            result_backend=os.environ.get(
+                "CELERY_RESULT_BACKEND", "redis://localhost:6379/1"
+            ),
         )
 
     celery.autodiscover_tasks(["app.tasks"])

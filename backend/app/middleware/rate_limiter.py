@@ -49,13 +49,15 @@ def register_rate_limiter(app: Flask) -> None:
 
         if request_count > limit:
             logger.warning("Rate limit exceeded for %s", key)
-            response = jsonify({
-                "error": {
-                    "code": "RATE_LIMITED",
-                    "message": "Too many requests.",
-                    "details": {},
+            response = jsonify(
+                {
+                    "error": {
+                        "code": "RATE_LIMITED",
+                        "message": "Too many requests.",
+                        "details": {},
+                    }
                 }
-            })
+            )
             response.status_code = 429
             response.headers["Retry-After"] = str(window)
             return response

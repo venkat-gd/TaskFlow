@@ -5,9 +5,7 @@ from app.models.task import TaskStatus, TaskPriority
 
 
 class TaskCreateSchema(Schema):
-    title = fields.String(
-        required=True, validate=validate.Length(min=1, max=200)
-    )
+    title = fields.String(required=True, validate=validate.Length(min=1, max=200))
     description = fields.String(allow_none=True, load_default=None)
     status = fields.String(
         load_default=TaskStatus.TODO.value,
@@ -33,11 +31,7 @@ class TaskUpdateSchema(TaskCreateSchema):
 class TaskPatchSchema(Schema):
     title = fields.String(validate=validate.Length(min=1, max=200))
     description = fields.String(allow_none=True)
-    status = fields.String(
-        validate=validate.OneOf([s.value for s in TaskStatus])
-    )
-    priority = fields.String(
-        validate=validate.OneOf([p.value for p in TaskPriority])
-    )
+    status = fields.String(validate=validate.OneOf([s.value for s in TaskStatus]))
+    priority = fields.String(validate=validate.OneOf([p.value for p in TaskPriority]))
     due_date = fields.DateTime(allow_none=True)
     position = fields.Integer()

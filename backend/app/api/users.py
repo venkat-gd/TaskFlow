@@ -14,7 +14,10 @@ def get_me():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": {"code": "NOT_FOUND", "message": "User not found."}}), 404
+        return (
+            jsonify({"error": {"code": "NOT_FOUND", "message": "User not found."}}),
+            404,
+        )
     return jsonify({"user": user.to_dict()}), 200
 
 
@@ -25,11 +28,19 @@ def update_me():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": {"code": "NOT_FOUND", "message": "User not found."}}), 404
+        return (
+            jsonify({"error": {"code": "NOT_FOUND", "message": "User not found."}}),
+            404,
+        )
 
     json_data = request.get_json()
     if json_data is None:
-        return jsonify({"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}), 400
+        return (
+            jsonify(
+                {"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}
+            ),
+            400,
+        )
 
     if "username" in json_data:
         user.username = json_data["username"]

@@ -44,12 +44,28 @@ def create():
     user_id = get_jwt_identity()
     json_data = request.get_json()
     if json_data is None:
-        return jsonify({"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}), 400
+        return (
+            jsonify(
+                {"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}
+            ),
+            400,
+        )
 
     try:
         data = create_schema.load(json_data)
     except ValidationError as err:
-        return jsonify({"error": {"code": "VALIDATION_ERROR", "message": "Validation failed.", "details": err.messages}}), 422
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Validation failed.",
+                        "details": err.messages,
+                    }
+                }
+            ),
+            422,
+        )
 
     task = create_task(user_id, data)
     return jsonify({"message": "Task created.", "task": task.to_dict()}), 201
@@ -62,7 +78,10 @@ def get_single(task_id: str):
     user_id = get_jwt_identity()
     task = get_task(task_id, user_id)
     if not task:
-        return jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}), 404
+        return (
+            jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}),
+            404,
+        )
     return jsonify({"task": task.to_dict()}), 200
 
 
@@ -73,16 +92,35 @@ def full_update(task_id: str):
     user_id = get_jwt_identity()
     task = get_task(task_id, user_id)
     if not task:
-        return jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}), 404
+        return (
+            jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}),
+            404,
+        )
 
     json_data = request.get_json()
     if json_data is None:
-        return jsonify({"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}), 400
+        return (
+            jsonify(
+                {"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}
+            ),
+            400,
+        )
 
     try:
         data = update_schema.load(json_data)
     except ValidationError as err:
-        return jsonify({"error": {"code": "VALIDATION_ERROR", "message": "Validation failed.", "details": err.messages}}), 422
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Validation failed.",
+                        "details": err.messages,
+                    }
+                }
+            ),
+            422,
+        )
 
     updated = update_task(task, data)
     return jsonify({"message": "Task updated.", "task": updated.to_dict()}), 200
@@ -95,16 +133,35 @@ def partial_update(task_id: str):
     user_id = get_jwt_identity()
     task = get_task(task_id, user_id)
     if not task:
-        return jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}), 404
+        return (
+            jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}),
+            404,
+        )
 
     json_data = request.get_json()
     if json_data is None:
-        return jsonify({"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}), 400
+        return (
+            jsonify(
+                {"error": {"code": "BAD_REQUEST", "message": "No input data provided."}}
+            ),
+            400,
+        )
 
     try:
         data = patch_schema.load(json_data)
     except ValidationError as err:
-        return jsonify({"error": {"code": "VALIDATION_ERROR", "message": "Validation failed.", "details": err.messages}}), 422
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Validation failed.",
+                        "details": err.messages,
+                    }
+                }
+            ),
+            422,
+        )
 
     updated = patch_task(task, data)
     return jsonify({"message": "Task updated.", "task": updated.to_dict()}), 200
@@ -117,7 +174,10 @@ def remove(task_id: str):
     user_id = get_jwt_identity()
     task = get_task(task_id, user_id)
     if not task:
-        return jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}), 404
+        return (
+            jsonify({"error": {"code": "NOT_FOUND", "message": "Task not found."}}),
+            404,
+        )
 
     delete_task(task)
     return jsonify({"message": "Task deleted."}), 200

@@ -80,9 +80,7 @@ class TestRegister:
         assert response.status_code == 422
 
     def test_register_no_body(self, client):
-        response = client.post(
-            "/api/auth/register", content_type="application/json"
-        )
+        response = client.post("/api/auth/register", content_type="application/json")
         assert response.status_code == 400
 
 
@@ -123,9 +121,7 @@ class TestLogin:
         assert response.status_code == 422
 
     def test_login_no_body(self, client):
-        response = client.post(
-            "/api/auth/login", content_type="application/json"
-        )
+        response = client.post("/api/auth/login", content_type="application/json")
         assert response.status_code == 400
 
 
