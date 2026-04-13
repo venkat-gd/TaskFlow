@@ -1,0 +1,39 @@
+services:
+  test-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    command: pytest tests/ --cov=app --cov-report=term-missing --cov-fail-under=90 -v
+    environment:
+      - FLASK_CONFIG=testing
+      - DATABASE_URL=postgresql://taskflow:taskflow_dev@test-db:5432/taskflow_test
+      - REDIS_URL=redis://test-redis:6379/0
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+
+  test-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: taskflow_test
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow_dev
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  test-redis:
+    image: redis:7-alpine
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
