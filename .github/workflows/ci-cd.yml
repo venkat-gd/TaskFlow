@@ -163,6 +163,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create CI env file
+        run: |
+          cat > .env <<EOL
+          SECRET_KEY=ci-test-secret
+          JWT_SECRET_KEY=ci-test-jwt-secret
+          FLASK_CONFIG=production
+          CORS_ORIGINS=http://localhost:3000
+          EOL
+
       - name: Build Docker images
         run: |
           docker compose build
