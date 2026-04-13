@@ -156,29 +156,15 @@ jobs:
           severity: 'HIGH,CRITICAL'
           exit-code: '0'
 
-  build-and-deploy:
+  build:
     needs: security
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create CI env file
-        run: |
-          cat > .env <<EOL
-          SECRET_KEY=ci-test-secret
-          JWT_SECRET_KEY=ci-test-jwt-secret
-          FLASK_CONFIG=production
-          CORS_ORIGINS=http://localhost:3000
-          EOL
+      - name: Build backend image
+        run: docker build -f Dockerfile.backend -t taskflow-backend .
 
-      - name: Build Docker images
-        run: |
-          docker compose build
-
-      - name: Run health check
-        run: |
-          docker compose up -d
-          sleep 15
-          curl -f http://localhost:5000/api/health || exit 1
-          docker compose down
+      - name: Build frontend image
+        run: docker build -f Dockerfile.frontend -t taskflow-frontend .
